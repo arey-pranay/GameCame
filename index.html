@@ -1,0 +1,274 @@
+<!--
+Copyright 2018 Google LLC. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================
+-->
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Pranay's Pacman</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-teal.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+  <header>
+    Use custom <b>camera-based </b> controls for playing <b>PacMan</b>.
+  </header>
+  <div id="no-webcam">
+    No webcam found. <br />
+    To use this demo, use a device with a webcam.
+  </div>
+  <!-- Top -->
+  <div id="pacman-container">
+    <div id="logo">
+      <div id="logo-l">
+        <div id="logo-b">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="status">Loading the mobilenet model...</div>
+
+  <div class="controller-panels " id="controller" style="display:none">
+    <div class="panel joystick-panel mt-12">
+
+      <div class="panel-row panel-row-top">
+
+        <div class="panel-cell panel-cell-left panel-cell-fill">
+          <p class="help-text">
+            <br> Click here to add the current view as the direction input
+          </p>
+        </div><!-- ./panel-cell -->
+
+        <div class="panel-cell panel-cell-center">
+          <div class="thumb-box">
+            <div class="thumb-box-outer">
+              <div class="thumb-box-inner">
+                <canvas class="thumb" width=224 height=224 id="up-thumb"></canvas>
+              </div>
+              <button class="record-button" id="up" /><span>Add Sample</span></button>
+            </div>
+            <p>
+              <span id="up-total">0</span> examples
+            </p>
+          </div>
+        </div><!-- ./panel-cell -->
+
+        <div class="panel-cell panel-cell-right panel-cell-fill">
+        </div><!-- ./panel-cell -->
+
+      </div><!-- /.panel-row -->
+      <div class="panel-row panel-row-middle">
+        <div class="panel-cell panel-cell-left">
+          <div class="thumb-box">
+            <div class="thumb-box-outer">
+              <div class="thumb-box-inner">
+                <canvas class="thumb" width=224 height=224 id="left-thumb"></canvas>
+              </div>
+              <button class="record-button" id="left" /><span>Add Sample</span></button>
+            </div>
+            <p>
+              <span id="left-total">0</span> examples
+            </p>
+          </div>
+        </div><!-- ./panel-cell -->
+
+        <div class="panel-cell panel-cell-center panel-cell-fill">
+          <img height="108" width="129" src="./images/a.png" />
+        </div><!-- ./panel-cell -->
+
+        <div class="panel-cell panel-cell-right">
+          <div class="thumb-box">
+            <div class="thumb-box-outer">
+              <div class="thumb-box-inner">
+                <canvas class="thumb" width=224 height=224 id="right-thumb"></canvas>
+              </div>
+              <button class="record-button" id="right" /><span>Add Sample</span></button>
+            </div>
+            <p>
+              <span id="right-total">0</span> examples
+            </p>
+          </div>
+        </div><!-- ./panel-cell -->
+
+      </div><!-- /.panel-row -->
+
+      <div class="panel-row panel-row-bottom">
+
+        <div class="panel-cell panel-cell-left panel-cell-fill">
+        </div><!-- ./panel-cell -->
+
+        <div class="panel-cell panel-cell-center">
+          <div class="thumb-box">
+            <div class="thumb-box-outer">
+              <div class="thumb-box-inner">
+                <canvas class="thumb" width=224 height=224 id="down-thumb"></canvas>
+              </div>
+              <button class="record-button" id="down" /><span>Add Sample</span></button>
+            </div>
+            <p>
+              <span id="down-total">0</span> examples
+            </p>
+          </div>
+        </div><!-- ./panel-cell -->
+
+        <div class="panel-cell panel-cell-right panel-cell-fill">
+        </div><!-- ./panel-cell -->
+
+      </div><!-- /.panel-row -->
+
+
+    </div><!-- /.panel -->
+
+    <div class="bg-purple-100 rounded-2xl border-2 border-dashed border-purple-950 flex justify-center py-6 w-96 px-8 ">
+
+      <div>
+
+        <div>
+          <h1 class=" font-mono text-4xl mb-5">
+            Steps to play
+          </h1>
+          <ul class="list-disc list-inside">
+            <li>
+              Train the model for each control. Like if you wanna train for up, look up and click at "Add sample" in the
+              up arrow. <br><br>
+
+            </li>
+            <li>You can also hold the squares to continuously click the pictures. 25-40 good photos will be more than
+              enough, do this for all four directions.
+              <br><br>
+            </li>
+            <li>
+              Then click on the "Train Model" button, and after the training is done, you can click on the "Play"
+              button. The game will start and you can use your trained actions. <br>
+            </li>
+          </ul>
+        </div><!-- ./panel-cell -->
+
+
+
+
+
+
+
+
+      </div><!-- /.panel -->
+
+    </div><!-- /#controller -->
+
+    <div class="panel training-panel mt-12">
+
+      <!-- Big buttons. -->
+      <div class="panel-row big-buttons">
+        <button id="train">
+          <img width="66" height="66" src="./images/power.svg" class="hover:scale-125 transition-all 2s" />
+          <span id="train-status">TRAIN MODEL</span>
+        </button>
+        <button id="predict">
+          <img width="66" height="66" src="./images/play-button.svg" class="hover:scale-125 ml-12 transition-all 2s" />
+          <span>PLAY</span>
+        </button>
+      </div><!-- /.panel-row -->
+
+      <div class="panel-row params-webcam-row">
+
+        <!-- Hyper params. -->
+        <div class="hyper-params hidden">
+
+          <!-- Learning rate -->
+          <div class="dropdown">
+            <label>Learning rate</label>
+            <div class="select">
+              <select id="learningRate">
+                <option value="0.00001">0.00001</option>
+                <option selected value="0.0001">0.0001</option>
+                <option value="0.01">0.001</option>
+                <option value="0.03">0.003</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Batch size -->
+          <div class="dropdown">
+            <label>Batch size</label>
+            <div class="select">
+              <select id="batchSizeFraction">
+                <option value="0.05">0.05</option>
+                <option value="0.1">0.1</option>
+                <option selected value="0.4">0.4</option>
+                <option value="1">1</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Epochs -->
+          <div class="dropdown">
+            <label>Epochs</label>
+            <div class="select">
+              <select id="epochs">
+                <option value="10">10</option>
+                <option selected value="20">20</option>
+                <option value="40">40</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hidden units -->
+          <div class="dropdown">
+            <label>Hidden units</label>
+            <div class="select">
+              <select id="dense-units">
+                <option value="10">10</option>
+                <option selected value="100">100</option>
+                <option value="200">200</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.hyper-params -->
+
+        <div class="webcam-box-outer">
+          <div class="webcam-box-inner">
+            <video autoplay playsinline muted id="webcam" width="224" height="224"></video>
+          </div>
+        </div>
+
+      </div><!-- /.panel-row -->
+
+    </div><!-- /.panel -->
+  </div>
+  <div class="w-full mt-12 py-2 bg-white text-[rgb(24,0,48)] text-center">
+    Made by <a href="https://www.linkedin.com/in/pranay-parikh-530331218/" class="font-bold">Pranay Parikh</a>, Thanks
+    to <a href="https://github.com/tensorflow">TensorFlow</a>.js
+  </div>
+
+
+  <!-- <p id="copyright">PAC-MAN&trade; &copy; BANDAI NAMCO Entertainment Inc.</p> -->
+
+  <script src="https://storage.googleapis.com/tfjs-examples/assets/webcam-transfer-learning/pacman-google.js"></script>
+  <script type="module" src="index.js"></script>
+</body>
+
+</html>
